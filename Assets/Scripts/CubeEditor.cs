@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-// [SelectionBase] // makes it harder to select the text but I didnt like it
+[SelectionBase] // makes it harder to select the text but I didnt like it
+[RequireComponent(typeof(Waypoint))]
 public class CubeEditor: MonoBehaviour
-{
-    [Range(1f, 20f)][SerializeField] float gridSize = 10f;
+{  
 
-    TextMesh textMesh;
+  
+    
+    Waypoint waypoint;
+
+    void Awake()
+    {
+        waypoint = GetComponent<Waypoint>();
+    }
 
     void Start()
     {
@@ -17,13 +24,24 @@ public class CubeEditor: MonoBehaviour
 
     void Update()
     {
-        Vector3 snapPos;
-        snapPos.x = Mathf.RoundToInt(transform.position.x/gridSize) * gridSize;
-        snapPos.z = Mathf.RoundToInt(transform.position.z/gridSize) * gridSize;
-
-        transform.position = new Vector3(snapPos.x, 0f, snapPos.z);
-
-        textMesh = GetComponentInChildren<TextMesh>();
-        textMesh.text = snapPos.x / gridSize + " " + snapPos.z / gridSize;
+        snapToGrid();
+        updateLabel();
+          
     }
+
+    private void snapToGrid()
+    {
+        int gridSize = waypoint.GetGridSize();        
+        transform.position = new Vector3(waypoint.GetGridPos().x * gridSize, 0f, waypoint.GetGridPos().y * gridSize);      
+    }
+
+    private void updateLabel()
+    {        
+        int gridSize = waypoint.GetGridSize();
+        TextMesh textMesh = GetComponentInChildren<TextMesh>();
+        string labelText = waypoint.GetGridPos().x + " " + waypoint.GetGridPos().y;
+        textMesh.text = labelText;
+        gameObject.name = "Cube " + labelText;
+    }
+
 }
