@@ -10,6 +10,7 @@ public class PathFinder : MonoBehaviour
 	Queue<Waypoint> queue = new Queue<Waypoint>();
 	bool isRunning = true;
 	Waypoint searchCenter; // current search center
+	List<Waypoint> path = new List<Waypoint>(); // constructed a new list to prevent errors and for it to show in the editor. (Game didnt work with out it)
 	Vector2Int[] directions = {
 		 Vector2Int.up,
 		 Vector2Int.right,
@@ -18,16 +19,31 @@ public class PathFinder : MonoBehaviour
 
 	};
 
-	// Use this for initialization
-	void Start () 
+	public List<Waypoint> GetPath()
 	{
 		LoadBlocks();
 		ColorStartAndEnd();
-		PathFind();
-		//ExploreNeighbours();
+		BreadthFirstSearch();
+		CreatePath();
+		return path;
 	}
 
-	private void PathFind()
+	private void CreatePath()
+	{
+		path.Add(endWaypoint);
+
+		Waypoint previous = endWaypoint.exploredFrom;
+		while (previous != startWaypoint)
+		{
+			path.Add(previous);
+			previous = previous.exploredFrom;
+		}
+
+		path.Add(startWaypoint);
+		path.Reverse();		
+	}
+
+	private void BreadthFirstSearch()
 	{
 		queue.Enqueue(startWaypoint);
 
@@ -40,9 +56,6 @@ public class PathFinder : MonoBehaviour
 			searchCenter.isExplored = true;
 
 		}
-		// todo work out path
-		print("Pahtfinding finished?");
-
 	}
 
 	private void HaltIfEndFound()
@@ -60,15 +73,10 @@ public class PathFinder : MonoBehaviour
 		foreach (Vector2Int directions in directions)
 		{
 			Vector2Int neighbourCoordinates = searchCenter.GetGridPos() + directions;
-			try
+			if (grid.ContainsKey(neighbourCoordinates))
 			{
 				QueueNewNeighbours(neighbourCoordinates);
-			}
-			catch
-			{
-				// do nothing
-			}
-			
+			}			
 		}
 	}
 
@@ -90,6 +98,7 @@ public class PathFinder : MonoBehaviour
 
 	private void ColorStartAndEnd()
 	{
+		// todo consider moving out
 		startWaypoint.SetTopColor(Color.green);
 		endWaypoint.SetTopColor(Color.black);
 	}
