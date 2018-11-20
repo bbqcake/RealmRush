@@ -5,6 +5,8 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour 
 {
 	[SerializeField] float movementSpeed = 2f;
+	
+
 		void Start () 
 	{
 		PathFinder pathFinder = FindObjectOfType<PathFinder>();

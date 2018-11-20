@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
  {
-	 [Range(0.1f, 100f)][SerializeField] float secondsBetweenSpawns = 8f;
+	 [Range(0.1f, 100f)][SerializeField] float secondsBetweenSpawns = 4f;
 	 [SerializeField] EnemyMovement enemyPrefab; // makes sure you can only drag in enemies with an enemymovement script
 
 	// Use this for initialization
@@ -18,7 +18,7 @@ public class EnemySpawner : MonoBehaviour
 		while (true) // forever
 		{
 			Instantiate(enemyPrefab, transform.position, Quaternion.identity);
-			yield return new WaitForSeconds(secondsBetweenSpawns);
+			yield return new WaitForSeconds(4);
 		}		
 	}	
 }
