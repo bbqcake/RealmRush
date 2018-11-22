@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class EnemyMovement : MonoBehaviour 
 {
 	[SerializeField] float movementSpeed = 2f;
+	[SerializeField] ParticleSystem goalParticle;
 	
 
 		void Start () 
 	{
 		PathFinder pathFinder = FindObjectOfType<PathFinder>();
-		List<Waypoint> path = pathFinder.GetPath();
+		var path = pathFinder.GetPath();
 		StartCoroutine(FollowPath(path));
 
 	}
@@ -23,8 +25,16 @@ public class EnemyMovement : MonoBehaviour
 			transform.position = waypoint.transform.position;			
 			yield return new WaitForSeconds(movementSpeed);
 		}
-		print("Ending patrol");
+		SelfDestruct();
+		
 	}
 	
-	// Update is called once per frame	
+	private void SelfDestruct()
+	{			
+		var vfx = Instantiate(goalParticle, transform.position, Quaternion.identity);
+		vfx.Play();
+
+		float destroyDelay = vfx.main.duration;		
+		Destroy(gameObject);		
+	}
 }

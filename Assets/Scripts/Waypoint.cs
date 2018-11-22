@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Waypoint : MonoBehaviour
- {
-	 [SerializeField] Color exploredColor;
-	 [SerializeField] Tower towerPrefab;
+ {	 
 	 public bool isExplored = false; // ok public as is a data class
 	 public Waypoint exploredFrom;
 	 public bool isPlaceable= true;	 
@@ -31,10 +29,13 @@ public class Waypoint : MonoBehaviour
 
 	private void OnMouseOver()
 	{
-		if(Input.GetMouseButtonDown(0) && isPlaceable)
+		if(Input.GetMouseButtonDown(0))
 		{
-			Instantiate(towerPrefab, transform.position, Quaternion.identity);
-			isPlaceable = false;
+			if (isPlaceable) // removed &&isPlacable. was bugging
+			{
+				FindObjectOfType<TowerFactory>().AddTower(this);
+			}
+			
 		}
 		else
 		{
